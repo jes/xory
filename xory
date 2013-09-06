@@ -12,7 +12,12 @@ my $db = DBM::Deep->new('xory.db');
 
 get '/' => sub {
     my $self = shift;
-    $self->redirect_to(url_for_id(1));
+    $self->render('index');
+};
+
+get '/about' => sub {
+    my $self = shift;
+    $self->render('about');
 };
 
 get '/play/:id' => sub {

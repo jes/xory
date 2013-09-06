@@ -3,7 +3,7 @@
 <div class="row">
     <div class="col-md-3"></div>
     <div class="col-md-6 centred mainpic">
-        <h3 class="idx"><%= $idx %>/<%= $npictures %></h3>
+        <h3 class="idx"><%= $idx %><small>/<%= $npictures %></small></h3>
         <img src="<%= $imgurl %>">
     </div>
     <div class="col-md-3"></div>
