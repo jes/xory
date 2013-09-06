@@ -8,8 +8,6 @@ use warnings;
 use DBM::Deep;
 use Mojolicious::Lite;
 
-my $GAMENAME = 'x-or-y';
-
 my $db = DBM::Deep->new('xory.db');
 
 get '/' => sub {
@@ -24,12 +22,12 @@ get '/play/:id' => sub {
 
 get '/play/:id/:name' => sub {
     my $self = shift;
-    if ($self->param('name') ne $GAMENAME) {
-        $self->redirect_to(url_for_id($self->param('id')));
+    my $id = $self->param('id');
+    if ($self->param('name') ne gamename($id)) {
+        $self->redirect_to(url_for_id($id));
         return;
     }
 
-    my $id = $self->param('id');
     my $gamecfg = $self->session("cfg$id") || initial_config($id);
     $gamecfg = initial_config($id) if $gamecfg->{delete_cfg};
     my $idx = $gamecfg->{idx};
@@ -58,9 +56,9 @@ get '/choice/:id/:idx/:cat' => sub {
     $self->session("cfg$id" => $gamecfg);
 
     if ($gamecfg->{idx} <= $db->{game}{$id}{npictures}) {
-        $self->redirect_to("/play/$id/$GAMENAME");
+        $self->redirect_to("/play/$id/" . gamename($id));
     } else {
-        $self->redirect_to("/finish/$id/$GAMENAME");
+        $self->redirect_to("/finish/$id/" . gamename($id));
     }
 };
 
@@ -71,12 +69,11 @@ get '/finish/:id' => sub {
 
 get '/finish/:id/:name' => sub {
     my $self = shift;
-    if ($self->param('name') ne $GAMENAME) {
-        $self->redirect_to(url_for_id($self->param('id'), 'finish'));
+    my $id = $self->param('id');
+    if ($self->param('name') ne gamename($id)) {
+        $self->redirect_to(url_for_id($id, 'finish'));
         return;
     }
-
-    my $id = $self->param('id');
 
     my $gamecfg = $self->session("cfg$id") || {};
     $gamecfg->{delete_cfg} = 1;
@@ -96,7 +93,7 @@ get '/finish/:id/:name' => sub {
 
     $self->stash(
         gameid => $id,
-        gamename => $GAMENAME,
+        gamename => gamename($id),
         status => \@status,
         npictures => $db->{game}{$id}{npictures},
         ncorrect => $ncorrect,
@@ -110,7 +107,7 @@ sub url_for_id {
     my $id = shift;
     my $type = shift || 'play';
 
-    return "/$type/$id/$GAMENAME";
+    return "/$type/$id/" . gamename($id);
 }
 
 sub initial_config {
@@ -120,4 +117,16 @@ sub initial_config {
         idx => 1,
         choices => {},
     };
+}
+
+sub gamename {
+    my $id = shift;
+
+    my $cat1 = $db->{game}{$id}{cat1};
+    my $cat2 = $db->{game}{$id}{cat2};
+
+    $cat1 =~ s/[^a-zA-Z0-9_]//g;
+    $cat2 =~ s/[^a-zA-Z0-9_]//g;
+
+    return "$cat1-or-$cat2";
 }
