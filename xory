@@ -1,0 +1,123 @@
+#!/usr/bin/perl
+# X or Y game
+# James Stanley 2013
+
+use strict;
+use warnings;
+
+use DBM::Deep;
+use Mojolicious::Lite;
+
+my $GAMENAME = 'x-or-y';
+
+my $db = DBM::Deep->new('xory.db');
+
+get '/' => sub {
+    my $self = shift;
+    $self->redirect_to(url_for_id(1));
+};
+
+get '/play/:id' => sub {
+    my $self = shift;
+    $self->redirect_to(url_for_id($self->param('id')));
+};
+
+get '/play/:id/:name' => sub {
+    my $self = shift;
+    if ($self->param('name') ne $GAMENAME) {
+        $self->redirect_to(url_for_id($self->param('id')));
+        return;
+    }
+
+    my $id = $self->param('id');
+    my $gamecfg = $self->session("cfg$id") || initial_config($id);
+    $gamecfg = initial_config($id) if $gamecfg->{delete_cfg};
+    my $idx = $gamecfg->{idx};
+    $self->session("cfg$id" => $gamecfg);
+
+    $self->stash(
+        cat1 => $db->{game}{$id}{cat1},
+        cat2 => $db->{game}{$id}{cat2},
+        imgurl => "/img/game/$id/$idx.jpg",
+        gameid => $id,
+        idx => $idx,
+        npictures => $db->{game}{$id}{npictures},
+    );
+    $self->render('play');
+};
+
+get '/choice/:id/:idx/:cat' => sub {
+    my $self = shift;
+
+    my $id = $self->param('id');
+    my $idx = $self->param('idx');
+
+    my $gamecfg = $self->session("cfg$id") || {};
+    $gamecfg->{choices}{$idx} = $self->param('cat') == 1 ? $db->{game}{$id}{cat1} : $db->{game}{$id}{cat2};
+    $gamecfg->{idx} = $idx + 1;
+    $self->session("cfg$id" => $gamecfg);
+
+    if ($gamecfg->{idx} <= $db->{game}{$id}{npictures}) {
+        $self->redirect_to("/play/$id/$GAMENAME");
+    } else {
+        $self->redirect_to("/finish/$id/$GAMENAME");
+    }
+};
+
+get '/finish/:id' => sub {
+    my $self = shift;
+    $self->redirect_to(url_for_id($self->param('id'), 'finish'));
+};
+
+get '/finish/:id/:name' => sub {
+    my $self = shift;
+    if ($self->param('name') ne $GAMENAME) {
+        $self->redirect_to(url_for_id($self->param('id'), 'finish'));
+        return;
+    }
+
+    my $id = $self->param('id');
+
+    my $gamecfg = $self->session("cfg$id") || {};
+    $gamecfg->{delete_cfg} = 1;
+    $self->session("cfg$id" => $gamecfg);
+
+    my @status;
+    my $ncorrect = 0;
+    for my $i (1 .. $db->{game}{$id}{npictures}) {
+        push @status, {
+            idx => $i,
+            imgurl => "/img/game/$id/$i.jpg",
+            category => $db->{game}{$id}{category}[$i-1],
+            yousaid => $gamecfg->{choices}{$i},
+        };
+        $ncorrect++ if $db->{game}{$id}{category}[$i-1] eq $gamecfg->{choices}{$i};
+    }
+
+    $self->stash(
+        gameid => $id,
+        gamename => $GAMENAME,
+        status => \@status,
+        npictures => $db->{game}{$id}{npictures},
+        ncorrect => $ncorrect,
+    );
+    $self->render('finish');
+};
+
+app->start;
+
+sub url_for_id {
+    my $id = shift;
+    my $type = shift || 'play';
+
+    return "/$type/$id/$GAMENAME";
+}
+
+sub initial_config {
+    my $id = shift;
+
+    return {
+        idx => 1,
+        choices => {},
+    };
+}

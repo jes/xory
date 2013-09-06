@@ -1,0 +1,14 @@
+% layout 'default';
+
+<div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-6 centred mainpic">
+        <h3 class="idx"><%= $idx %>/<%= $npictures %></h3>
+        <img src="<%= $imgurl %>">
+    </div>
+    <div class="col-md-3"></div>
+</div>
+
+<div class="row centred">
+    <a href="/choice/<%= $gameid %>/<%= $idx %>/1" class="btn btn-lg btn-primary"><%= $cat1 %></a> or <a href="/choice/<%= $gameid %>/<%= $idx %>/2" class="btn btn-lg btn-primary"><%= $cat2 %></a> ?
+</div>

@@ -1,0 +1,28 @@
+body {
+    padding: 30px;
+}
+
+img {
+    max-width: 100%;
+}
+
+.navbar {
+    margin-bottom: 30px;
+}
+
+.centred {
+    text-align: center;
+}
+
+.margin-centred {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.mainpic {
+    padding-bottom: 30px;
+}
+
+.finish-cat {
+    padding-right: 30px;
+}

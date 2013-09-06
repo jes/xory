@@ -1,0 +1,30 @@
+% layout 'default';
+
+<div class="table-responsive">
+<table class="margin-centred table table-condensed">
+<tr><th colspan="2"></th><th>It is</th><th>You said</th><th>Correct</th></tr>
+% for my $pic (@$status) {
+<tr>
+    <td><h4 class="finish-cat"><%= $pic->{idx} %>.</h4></td>
+    <td><img width="125px" src="<%= $pic->{imgurl} %>"></td>
+    <td><h4 class="finish-cat"><%= $pic->{category} %></h4></td>
+    <td><h4 class="finish-cat"><%= $pic->{yousaid} %></h4></td>
+    <td><h4 class="finish-cat">
+    % if ($pic->{category} eq $pic->{yousaid}) {
+        &#x2713;
+    % } else {
+        &#x2717;
+    % }
+    </h4></td>
+</tr>
+% }
+<tr>
+    <td colspan="4"></td>
+    <td>
+        <h4 class="finish-cat"><%= $ncorrect %><small>/<%= $npictures %></small></h4>
+    </td>
+</tr>
+</table>
+</div>
+
+<a href="/play/<%= $gameid %>/<%= $gamename %>" class="btn btn-primary">Play again</a>
