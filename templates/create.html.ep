@@ -4,9 +4,9 @@
 <p>Enter the two categories of picture.</p>
 <form role="form" method="post" action="/create">
     <div class="form-group centred">
-        <input type="text" id="cat2" name="cat2" class="form-control" placeholder="Category 1">
+        <input type="text" id="cat1" name="cat1" class="form-control" placeholder="Category 1">
         or
-        <input type="text" id="cat1" name="cat1" class="form-control" placeholder="Category 2">
+        <input type="text" id="cat2" name="cat2" class="form-control" placeholder="Category 2">
         ?
     </div>
 
