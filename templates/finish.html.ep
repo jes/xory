@@ -6,7 +6,7 @@
 % for my $pic (@$status) {
 <tr>
     <td><h4 class="finish-cat"><%= $pic->{idx} %>.</h4></td>
-    <td><img width="125px" src="<%= $pic->{imgurl} %>"></td>
+    <td><img class="img-rounded" width="125px" src="<%= $pic->{imgurl} %>"></td>
     <td><h4 class="finish-cat"><%= $pic->{category} %></h4></td>
     <td><h4 class="finish-cat"><%= $pic->{yousaid} %></h4></td>
     <td><h4 class="finish-cat">

@@ -151,14 +151,65 @@ get '/add-pics/:id/:name' => sub {
     }
 
     my $perms = $self->session('perms') || {};
+    #if (!$perms->{$id}) {
+    #    $self->flash(error => 'Insufficient permission to edit that game.');
+    #    $self->redirect_to('/create');
+    #    return;
+    #}
 
-    if (!$perms->{$id}) {
-        $self->flash(error => 'Insufficient permission to edit that game.');
+    my @pictures;
+    for my $i (1 .. $db->{game}{$id}{npictures}) {
+        push @pictures, {
+            idx => $i,
+            imgurl => "/img/game/$id/$i.jpg",
+            category => $db->{game}{$id}{category}[$i-1],
+        };
+    }
+
+    $self->stash(
+        cat1 => $db->{game}{$id}{cat1},
+        cat2 => $db->{game}{$id}{cat2},
+        gameid => $id,
+        gamename => gamename($id),
+        npictures => $db->{game}{$id}{npictures},
+        pictures => \@pictures,
+    );
+    $self->render('add-pics');
+};
+
+post '/delete-pic' => sub {
+    my $self = shift;
+    my $id = $self->param('gameid');
+
+    if (!defined $id || $id !~ /^\d+$/) {
+        $self->flash(error => 'Something went wrong.');
         $self->redirect_to('/create');
         return;
     }
 
-    $self->render('add-pics');
+    my $perms = $self->session('perms') || {};
+    #if (!$perms->{$id}) {
+    #    $self->flash(error => 'Insufficient permission to edit that game.');
+    #    $self->redirect_to('/create');
+    #    return;
+    #}
+
+    my $idx = $self->param('idx');
+    if (!defined $idx || $id !~ /^\d+$/) {
+        $self->flash(error => 'Something went wrong.');
+        $self->redirect_to(url_for_id($id, 'add-pics'));
+        return;
+    }
+
+    for my $i ($idx .. $db->{game}{$id}{npictures}-1) {
+        my $i1 = $i+1;
+        rename "public/game/$id/$i1.jpg", "public/game/$i.jpg";
+        $db->{game}{$id}{category}[$i-1] = $db->{game}{$id}{category}[$i];
+    }
+    pop @{ $db->{game}{$id}{category} };
+    $db->{game}{$id}{npictures}--;
+
+    $self->redirect_to(url_for_id($id, 'add-pics'));
 };
 
 app->start;
