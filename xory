@@ -13,6 +13,10 @@ use POSIX qw(tmpnam);
 
 my $db = DBM::Deep->new('xory.db');
 
+helper 'baseurl' => sub {
+    return 'http://xory.pm';
+};
+
 get '/' => sub {
     my $self = shift;
     $self->redirect_to(url_for_id(1));

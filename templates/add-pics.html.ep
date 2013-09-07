@@ -1,7 +1,7 @@
 % layout 'default';
 
 <div class="table-responsive">
-<p>Add the pictures.</p>
+<p>Add the pictures. Once you're done here you won't be able to get back.</p>
 <table class="margin-centred table table-condensed">
 % for my $pic (@$pictures) {
 <tr>
@@ -36,4 +36,12 @@
 </form>
 
 </table>
+</div>
+
+<div class="row">
+<div class="col-md-12">
+<a href="/play/<%= $gameid %>/<%= $gamename %>" class="btn btn-primary">Finish and play</a>
+
+<p>Game link: <strong><%= baseurl %>/play/<%= $gameid %>/<%= $gamename %></strong></p>
+</div>
 </div>
