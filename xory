@@ -132,7 +132,7 @@ post '/create' => sub {
         cat1 => $self->param('cat1'),
         cat2 => $self->param('cat2'),
         category => [],
-        descr => 'X or Y?',
+        descr => $self->param('descr'),
         npictures => 0,
     };
 

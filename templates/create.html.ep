@@ -1,13 +1,18 @@
 % layout 'default';
 
 <div class="row"><div class="col-md-2"></div><div class="col-md-8">
-<p>Enter the two categories of picture.</p>
+<p>Enter the two categories of picture, and optionally a short piece of text about the game.</p>
 <form role="form" method="post" action="/create">
     <div class="form-group centred">
         <input type="text" id="cat1" name="cat1" class="form-control" placeholder="Category 1">
         or
         <input type="text" id="cat2" name="cat2" class="form-control" placeholder="Category 2">
         ?
+    </div>
+
+    <div class="form-group">
+        <label for="descr">Description <small>(optional)</small></label>
+        <textarea class="form-control" id="descr" name="descr"></textarea>
     </div>
 
     <div class="form-group">
