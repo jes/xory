@@ -5,8 +5,11 @@
 use strict;
 use warnings;
 
+use AnyEvent::Util;
 use DBM::Deep;
+use Image::Magick;
 use Mojolicious::Lite;
+use POSIX qw(tmpnam);
 
 my $db = DBM::Deep->new('xory.db');
 
@@ -42,6 +45,7 @@ get '/play/:id/:name' => sub {
     $self->stash(
         cat1 => $db->{game}{$id}{cat1},
         cat2 => $db->{game}{$id}{cat2},
+        descr => $db->{game}{$id}{descr},
         imgurl => "/img/game/$id/$idx.jpg",
         gameid => $id,
         idx => $idx,
@@ -98,6 +102,7 @@ get '/finish/:id/:name' => sub {
     }
 
     $self->stash(
+        descr => $db->{game}{$id}{descr},
         gameid => $id,
         gamename => gamename($id),
         status => \@status,
@@ -127,6 +132,7 @@ post '/create' => sub {
         cat1 => $self->param('cat1'),
         cat2 => $self->param('cat2'),
         category => [],
+        descr => 'X or Y?',
         npictures => 0,
     };
 
@@ -151,11 +157,11 @@ get '/add-pics/:id/:name' => sub {
     }
 
     my $perms = $self->session('perms') || {};
-    #if (!$perms->{$id}) {
-    #    $self->flash(error => 'Insufficient permission to edit that game.');
-    #    $self->redirect_to('/create');
-    #    return;
-    #}
+    if (!$perms->{$id}) {
+        $self->flash(error => 'Insufficient permission to edit that game.');
+        $self->redirect_to('/create');
+        return;
+    }
 
     my @pictures;
     for my $i (1 .. $db->{game}{$id}{npictures}) {
@@ -177,6 +183,37 @@ get '/add-pics/:id/:name' => sub {
     $self->render('add-pics');
 };
 
+post '/add-pic' => sub {
+    my $self = shift;
+    my $id = $self->param('gameid');
+
+    if (!defined $id || $id !~ /^\d+$/) {
+        $self->flash(error => 'Something went wrong.');
+        $self->redirect_to('/create');
+        return;
+    }
+
+    my $perms = $self->session('perms') || {};
+    if (!$perms->{$id}) {
+        $self->flash(error => 'Insufficient permission to edit that game.');
+        $self->redirect_to('/create');
+        return;
+    }
+
+    my $category = $self->param('category');
+    my $imgfile = $self->req->upload('img');
+
+    fork_call {
+        handle_uploaded_pic($id, $category, $imgfile);
+    } sub {
+        if ($@) {
+            print STDERR "$@";
+            $self->flash(error => 'Something went wrong while processing that image. Sorry!');
+        }
+        $self->redirect_to(url_for_id($id, 'add-pics'));
+    };
+};
+
 post '/delete-pic' => sub {
     my $self = shift;
     my $id = $self->param('gameid');
@@ -188,11 +225,11 @@ post '/delete-pic' => sub {
     }
 
     my $perms = $self->session('perms') || {};
-    #if (!$perms->{$id}) {
-    #    $self->flash(error => 'Insufficient permission to edit that game.');
-    #    $self->redirect_to('/create');
-    #    return;
-    #}
+    if (!$perms->{$id}) {
+        $self->flash(error => 'Insufficient permission to edit that game.');
+        $self->redirect_to('/create');
+        return;
+    }
 
     my $idx = $self->param('idx');
     if (!defined $idx || $id !~ /^\d+$/) {
@@ -240,4 +277,27 @@ sub gamename {
     $cat2 =~ s/[^a-zA-Z0-9_]//g;
 
     return "$cat1-or-$cat2";
+}
+
+sub handle_uploaded_pic {
+    my ($id, $category, $img) = @_;
+
+    mkdir "public/img/game/$id";
+
+    my $tmp_path = tmpnam();
+    $img->move_to($tmp_path);
+
+    my $im = Image::Magick->new();
+    my $err = $im->Read($tmp_path);
+    die $err if $err;
+
+    $err = $im->Scale(geometry => '450x350');
+    die $err if $err;
+
+    my $idx = $db->{game}{$id}{npictures} + 1;
+    $err = $im->Write("public/img/game/$id/$idx.jpg");
+    die $err if $err;
+
+    push @{ $db->{game}{$id}{category} }, $category;
+    $db->{game}{$id}{npictures}++;
 }

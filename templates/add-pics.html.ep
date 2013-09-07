@@ -1,10 +1,10 @@
 % layout 'default';
 
 <div class="table-responsive">
+<p>Add the pictures.</p>
 <table class="margin-centred table table-condensed">
 % for my $pic (@$pictures) {
 <tr>
-    <td><h4 class="finish-cat"><%= $pic->{idx} %>.</h4></td>
     <td><img class="img-rounded" width="125px" src="<%= $pic->{imgurl} %>"></td>
     <td><h4 class="finish-cat"><%= $pic->{category} %></h4></td>
     <td>
@@ -17,16 +17,14 @@
 </tr>
 % }
 
-<form method="post" action="/add-pics/<%= $gameid %>/<%= $gamename %>">
+<form method="post" action="/add-pic" enctype="multipart/form-data">
+<input type="hidden" name="gameid" value="<%= $gameid %>">
 <tr>
     <td>
-        <h4 class="finish-cat"><%= $npictures+1 %>.</h4>
+        <input type="file" id="img" name="img">
     </td>
     <td>
-        <input type="file" name="img">
-    </td>
-    <td>
-        <select class="form-control">
+        <select name="category" class="form-control">
             <option><%= $cat1 %></option>
             <option><%= $cat2 %></option>
         </select>
