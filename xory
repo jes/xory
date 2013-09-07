@@ -140,9 +140,7 @@ post '/create' => sub {
         npictures => 0,
     };
 
-    my $perms = $self->session('perms') || {};
-    $perms->{$id} = 1;
-    $self->session(perms => $perms);
+    give_perm($self, $id);
 
     $self->redirect_to(url_for_id($id, 'add-pics'));
 };
@@ -160,8 +158,7 @@ get '/add-pics/:id/:name' => sub {
         return;
     }
 
-    my $perms = $self->session('perms') || {};
-    if (!$perms->{$id}) {
+    if (!has_perm($self, $id)) {
         $self->flash(error => 'Insufficient permission to edit that game.');
         $self->redirect_to('/create');
         return;
@@ -187,6 +184,13 @@ get '/add-pics/:id/:name' => sub {
     $self->render('add-pics');
 };
 
+# TODO: auth
+get '/wizard' => sub {
+    my $self = shift;
+    $self->session(wizard => 1);
+    $self->redirect_to('/');
+};
+
 post '/add-pic' => sub {
     my $self = shift;
     my $id = $self->param('gameid');
@@ -197,8 +201,7 @@ post '/add-pic' => sub {
         return;
     }
 
-    my $perms = $self->session('perms') || {};
-    if (!$perms->{$id}) {
+    if (!has_perm($self, $id)) {
         $self->flash(error => 'Insufficient permission to edit that game.');
         $self->redirect_to('/create');
         return;
@@ -228,8 +231,7 @@ post '/delete-pic' => sub {
         return;
     }
 
-    my $perms = $self->session('perms') || {};
-    if (!$perms->{$id}) {
+    if (!has_perm($self, $id)) {
         $self->flash(error => 'Insufficient permission to edit that game.');
         $self->redirect_to('/create');
         return;
@@ -304,4 +306,19 @@ sub handle_uploaded_pic {
 
     push @{ $db->{game}{$id}{category} }, $category;
     $db->{game}{$id}{npictures}++;
+}
+
+sub give_perm {
+    my ($self, $id) = @_;
+
+    my $perms = $self->session('perms') || {};
+    $perms->{$id} = 1;
+    $self->session(perms => $perms);
+}
+
+sub has_perm {
+    my ($self, $id) = @_;
+
+    my $perms = $self->session('perms') || {};
+    return $perms->{$id} || $self->session('wizard');
 }
