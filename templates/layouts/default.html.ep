@@ -35,11 +35,17 @@
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li><a href="/about">About</a></li>
-            <li><a href="#">Popular games</a></li>
-            <li><a href="#">Create game</a></li>
+            <li><a href="/popular">Popular games</a></li>
+            <li><a href="/create">Create game</a></li>
           </ul>
         </div>
       </div>
+
+      % if (flash 'error') {
+      <div class="alert alert-danger">
+        <%= flash 'error' %>
+      </div>
+      % }
 
       <%= content %>
 

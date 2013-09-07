@@ -107,6 +107,60 @@ get '/finish/:id/:name' => sub {
     $self->render('finish');
 };
 
+get '/create' => sub {
+    my $self = shift;
+    $self->render('create');
+};
+
+post '/create' => sub {
+    my $self = shift;
+
+    if (!defined $self->param('cat1') || !defined $self->param('cat2')) {
+        $self->flash(error => 'Please enter categories.');
+        $self->redirect_to('/create');
+        return;
+    }
+
+    my $id = ++$db->{ngames};
+
+    $db->{game}{$id} = {
+        cat1 => $self->param('cat1'),
+        cat2 => $self->param('cat2'),
+        category => [],
+        npictures => 0,
+    };
+
+    my $perms = $self->session('perms') || {};
+    $perms->{$id} = 1;
+    $self->session(perms => $perms);
+
+    $self->redirect_to(url_for_id($id, 'add-pics'));
+};
+
+get '/add-pics/:id' => sub {
+    my $self = shift;
+    $self->redirect_to(url_for_id($self->param('id'), 'add-pics'));
+};
+
+get '/add-pics/:id/:name' => sub {
+    my $self = shift;
+    my $id = $self->param('id');
+    if ($self->param('name') ne gamename($id)) {
+        $self->redirect_to(url_for_id($id, 'add-pics'));
+        return;
+    }
+
+    my $perms = $self->session('perms') || {};
+
+    if (!$perms->{$id}) {
+        $self->flash(error => 'Insufficient permission to edit that game.');
+        $self->redirect_to('/create');
+        return;
+    }
+
+    $self->render('add-pics');
+};
+
 app->start;
 
 sub url_for_id {
