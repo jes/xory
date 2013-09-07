@@ -40,7 +40,8 @@
 
 <div class="row">
 <div class="col-md-12">
-<a href="/play/<%= $gameid %>/<%= $gamename %>" class="btn btn-primary">Finish and play</a>
+<a href="/shuffle-pics/<%= $gameid %>/<%= $gamename %>" class="btn btn-primary">Shuffle pictures</a>
+<a href="/play/<%= $gameid %>/<%= $gamename %>" class="btn btn-success">Finish and play</a>
 
 <p>Game link: <strong><%= baseurl %>/play/<%= $gameid %>/<%= $gamename %></strong></p>
 </div>

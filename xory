@@ -6,8 +6,10 @@ use strict;
 use warnings;
 
 use AnyEvent::Util;
+use Data::Structure::Util qw(unbless);
 use DBM::Deep;
 use Image::Magick;
+use List::Util qw(shuffle);
 use Mojolicious::Lite;
 use POSIX qw(tmpnam);
 
@@ -50,7 +52,7 @@ get '/play/:id/:name' => sub {
         cat1 => $db->{game}{$id}{cat1},
         cat2 => $db->{game}{$id}{cat2},
         descr => $db->{game}{$id}{descr},
-        imgurl => "/img/game/$id/$idx.jpg",
+        imgurl => "/$db->{game}{$id}{pictures}[$idx-1]{file}",
         gameid => $id,
         idx => $idx,
         npictures => $db->{game}{$id}{npictures},
@@ -98,11 +100,11 @@ get '/finish/:id/:name' => sub {
     for my $i (1 .. $db->{game}{$id}{npictures}) {
         push @status, {
             idx => $i,
-            imgurl => "/img/game/$id/$i.jpg",
-            category => $db->{game}{$id}{category}[$i-1],
+            imgurl => "/$db->{game}{$id}{pictures}[$i-1]{file}",
+            category => $db->{game}{$id}{pictures}[$i-1]{category},
             yousaid => $gamecfg->{choices}{$i},
         };
-        $ncorrect++ if $db->{game}{$id}{category}[$i-1] eq $gamecfg->{choices}{$i};
+        $ncorrect++ if $db->{game}{$id}{pictures}[$i-1]{category} eq $gamecfg->{choices}{$i};
     }
 
     $self->stash(
@@ -135,8 +137,8 @@ post '/create' => sub {
     $db->{game}{$id} = {
         cat1 => $self->param('cat1'),
         cat2 => $self->param('cat2'),
-        category => [],
         descr => $self->param('descr'),
+        pictures => [],
         npictures => 0,
     };
 
@@ -168,8 +170,8 @@ get '/add-pics/:id/:name' => sub {
     for my $i (1 .. $db->{game}{$id}{npictures}) {
         push @pictures, {
             idx => $i,
-            imgurl => "/img/game/$id/$i.jpg",
-            category => $db->{game}{$id}{category}[$i-1],
+            imgurl => "/$db->{game}{$id}{pictures}[$i-1]{file}",
+            category => $db->{game}{$id}{pictures}[$i-1]{category},
         };
     }
 
@@ -182,6 +184,35 @@ get '/add-pics/:id/:name' => sub {
         pictures => \@pictures,
     );
     $self->render('add-pics');
+};
+
+get '/shuffle-pics/:id' => sub {
+    my $self = shift;
+    $self->redirect_to(url_for_id($self->param('id'), 'shuffle-pics'));
+};
+
+get '/shuffle-pics/:id/:name' => sub {
+    my $self = shift;
+    my $id = $self->param('id');
+    if ($self->param('name') ne gamename($id)) {
+        $self->redirect_to(url_for_id($self->param('id'), 'shuffle-pics'));
+        return;
+    }
+
+    if (!has_perm($self, $id)) {
+        $self->flash(error => 'Insufficient permission to edit that game.');
+        $self->redirect_to('/create');
+        return;
+    }
+
+    my @p = @{ $db->{game}{$id}{pictures} };
+    @p = map { +{ file => $_->{file}, category => $_->{category} } } @p;
+    @p = shuffle @p;
+    $db->{game}{$id}{pictures} = \@p;
+
+    print STDERR "SAFE!\n";
+
+    $self->redirect_to(url_for_id($self->param('id'), 'add-pics'));
 };
 
 # TODO: auth
@@ -247,9 +278,9 @@ post '/delete-pic' => sub {
     for my $i ($idx .. $db->{game}{$id}{npictures}-1) {
         my $i1 = $i+1;
         rename "public/game/$id/$i1.jpg", "public/game/$i.jpg";
-        $db->{game}{$id}{category}[$i-1] = $db->{game}{$id}{category}[$i];
+        $db->{game}{$id}{pictures}[$i-1] = $db->{game}{$id}{pictures}[$i];
     }
-    pop @{ $db->{game}{$id}{category} };
+    pop @{ $db->{game}{$id}{pictures} };
     $db->{game}{$id}{npictures}--;
 
     $self->redirect_to(url_for_id($id, 'add-pics'));
@@ -285,6 +316,10 @@ sub gamename {
     return "$cat1-or-$cat2";
 }
 
+sub random_id {
+    return sprintf("%08x%08x", int(rand(2**32)), int(rand(2**32)));
+}
+
 sub handle_uploaded_pic {
     my ($id, $category, $img) = @_;
 
@@ -300,11 +335,16 @@ sub handle_uploaded_pic {
     $err = $im->Scale(geometry => '450x350');
     die $err if $err;
 
+    my $file = "img/game/$id/" . random_id() . ".jpg";
+
     my $idx = $db->{game}{$id}{npictures} + 1;
-    $err = $im->Write("public/img/game/$id/$idx.jpg");
+    $err = $im->Write("public/$file");
     die $err if $err;
 
-    push @{ $db->{game}{$id}{category} }, $category;
+    push @{ $db->{game}{$id}{pictures} }, {
+        category => $category,
+        file => $file,
+    };
     $db->{game}{$id}{npictures}++;
 }
 
