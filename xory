@@ -67,6 +67,7 @@ get '/play/:id/:name' => sub {
         gameid => $id,
         idx => $idx,
         npictures => $db->{game}{$id}{npictures},
+        ncorrect => $gamecfg->{ncorrect},
     );
     $self->render('play');
 };
@@ -79,6 +80,7 @@ get '/choice/:id/:idx/:cat' => sub {
 
     my $gamecfg = $self->session("cfg$id") || {};
     $gamecfg->{choices}{$idx} = $self->param('cat') == 1 ? $db->{game}{$id}{cat1} : $db->{game}{$id}{cat2};
+    $gamecfg->{ncorrect}++ if $gamecfg->{choices}{$idx} eq $db->{game}{$id}{pictures}[$idx-1]{category};
     $gamecfg->{idx} = $idx + 1;
     $self->session("cfg$id" => $gamecfg);
 
@@ -112,6 +114,7 @@ get '/review/:id/:name' => sub {
         nexturl => $nexturl,
         idx => $gamecfg->{idx}-1,
         npictures => $db->{game}{$id}{npictures},
+        ncorrect => $gamecfg->{ncorrect},
     );
     $self->render('review');
 };
@@ -346,6 +349,7 @@ sub initial_config {
     return {
         idx => 1,
         choices => {},
+        ncorrect => 0,
     };
 }
 

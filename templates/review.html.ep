@@ -7,7 +7,8 @@
 <div class="row">
     <div class="col-md-3"></div>
     <div class="col-md-6 centred mainpic">
-        <h3 class="idx"><%= $idx %><small>/<%= $npictures %></small></h3>
+        <h3 class="idx"><%= $idx %><small>/<%= $npictures %></small>
+        <span style="font-size:0.8em"><%= $ncorrect %><small>/<%= $idx %> correct</small></span></h3>
         <img class="img-rounded" src="<%= $imgurl %>">
     </div>
     <div class="col-md-3"></div>
