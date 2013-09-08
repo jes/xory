@@ -71,11 +71,38 @@ get '/choice/:id/:idx/:cat' => sub {
     $gamecfg->{idx} = $idx + 1;
     $self->session("cfg$id" => $gamecfg);
 
-    if ($gamecfg->{idx} <= $db->{game}{$id}{npictures}) {
-        $self->redirect_to("/play/$id/" . gamename($id));
-    } else {
-        $self->redirect_to("/finish/$id/" . gamename($id));
+    $self->redirect_to("/review/$id/" . gamename($id));
+};
+
+get '/review/:id' => sub {
+    my $self = shift;
+    $self->redirect_to(url_for_id($self->param('id'), 'review'));
+};
+
+get '/review/:id/:name' => sub {
+    my $self = shift;
+    my $id = $self->param('id');
+    if ($self->param('name') ne gamename($id)) {
+        $self->redirect_to(url_for_id($id, 'review'));
+        return;
     }
+
+    my $gamecfg = $self->session("cfg$id") || {};
+
+    my $nexturl = $gamecfg->{idx} <= $db->{game}{$id}{npictures} ?
+        "/play/$id/" . gamename($id) :
+        "/finish/$id/" . gamename($id);
+
+    $self->stash(
+        category => $db->{game}{$id}{pictures}[$gamecfg->{idx}-2]{category},
+        descr => $db->{game}{$id}{descr},
+        picdescr => $db->{game}{$id}{pictures}[$gamecfg->{idx}-2]{descr},
+        imgurl => "/$db->{game}{$id}{pictures}[$gamecfg->{idx}-2]{file}",
+        nexturl => $nexturl,
+        idx => $gamecfg->{idx}-1,
+        npictures => $db->{game}{$id}{npictures},
+    );
+    $self->render('review');
 };
 
 get '/finish/:id' => sub {
