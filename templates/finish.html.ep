@@ -1,7 +1,12 @@
 % layout 'default';
 
-<div class="centred" style="padding-bottom: 15px">
-    You scored <span class="badge"><span style="font-size:1.4em"><%= $ncorrect %></span>/<%= $npictures %></span>
+<div style="padding-bottom: 15px">
+    <div class="centred">
+        You scored <span class="badge"><span style="font-size:1.4em"><%= $ncorrect %></span>/<%= $npictures %></span>
+    </div>
+
+    <p>Game link: <a href="<%= baseurl %>/play/<%= $gameid %>/<%= $gamename %>"><%= baseurl %>/play/<%= $gameid %>/<%= $gamename %></a></p>
+    <a href="/play/<%= $gameid %>/<%= $gamename %>" class="btn btn-primary">Play again</a>
 </div>
 
 <div class="table-responsive">
@@ -30,7 +35,5 @@
 </tr>
 </table>
 </div>
-
-<p>Game link: <a href="<%= baseurl %>/play/<%= $gameid %>/<%= $gamename %>"><%= baseurl %>/play/<%= $gameid %>/<%= $gamename %></a></p>
 
 <a href="/play/<%= $gameid %>/<%= $gamename %>" class="btn btn-primary">Play again</a>
