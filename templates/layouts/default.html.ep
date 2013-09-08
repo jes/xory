@@ -9,9 +9,9 @@
 
     <title>X or Y?</title>
 
-    <link href="/css/bootstrap.min.css" rel="stylesheet">
-
-    <link href="/css/style.css" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Oleo+Script+Swash+Caps' rel='stylesheet' type='text/css'>
+    <link href="/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="/css/style.css" rel="stylesheet" type="text/css">
 
     <!--[if lt IE 9]>
       <script src="/js/html5shiv.js"></script>

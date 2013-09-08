@@ -2,12 +2,20 @@ body {
     padding-top: 30px;
 }
 
+.navbar-brand {
+    font-family: 'Oleo Script Swash Caps', cursive;
+}
+
 img {
     max-width: 100%;
 }
 
 .navbar {
     margin-bottom: 10px;
+}
+
+.jumbotron h1, .jumbotron p, .navbar, .credit {
+    text-shadow: 1px 1px white;
 }
 
 .idx {
