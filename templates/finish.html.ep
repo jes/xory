@@ -1,5 +1,9 @@
 % layout 'default';
 
+<div class="centred" style="padding-bottom: 15px">
+    You scored <span class="badge"><span style="font-size:1.4em"><%= $ncorrect %></span>/<%= $npictures %></span>
+</div>
+
 <div class="table-responsive">
 <table class="margin-centred table table-condensed">
 <tr><th></th><th>It is</th><th>You said</th><th>Correct</th></tr>
