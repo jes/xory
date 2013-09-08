@@ -35,10 +35,10 @@
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li><a href="/about">About</a></li>
-            <li><a href="/popular">Popular games</a></li>
-            <li><a href="/create">Create game</a></li>
+            <li><a href="/popular">Play a game</a></li>
+            <li><a href="/create">Create a game</a></li>
             % if (session 'wizard') {
-                <li style="padding-top: 15px"><span class="label label-danger">WIZARD</span></li>
+                <li style="padding-top: 15px"><span class="label label-danger"><a href="/unwizard">WIZARD</a></span></li>
             % }
           </ul>
         </div>

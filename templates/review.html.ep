@@ -1,0 +1,23 @@
+% layout 'default';
+
+<div class="row centred">
+    <%= $descr %>
+</div>
+
+<div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-6 centred mainpic">
+        <h3 class="idx"><%= $idx %><small>/<%= $npictures %></small></h3>
+        <img class="img-rounded" src="<%= $imgurl %>">
+    </div>
+    <div class="col-md-3"></div>
+</div>
+
+<div class="row centred">
+</div>
+
+<div class="row centred">
+    <h4><%= $category %></h4>
+    <%= $picdescr %>
+    <a href="<%= $nexturl %>" class="btn btn-lg btn-primary">Next &raquo;</a>
+</div>

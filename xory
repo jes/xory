@@ -21,8 +21,22 @@ helper 'baseurl' => sub {
 
 get '/' => sub {
     my $self = shift;
-    $self->redirect_to(url_for_id(1));
-    #$self->render('index');
+
+    my @games;
+    for my $i (2,3) {
+        push @games, {
+            cat1 => ucwords($db->{game}{$i}{cat1}),
+            cat2 => ucwords($db->{game}{$i}{cat2}),
+            imgurl => "/$db->{game}{$i}{pictures}[0]{file}",
+            descr => $db->{game}{$i}{descr},
+            playurl => url_for_id($i),
+        };
+    }
+
+    $self->stash(
+        games => \@games,
+    );
+    $self->render('index');
 };
 
 get '/about' => sub {
@@ -250,6 +264,12 @@ get '/wizard' => sub {
     $self->redirect_to('/');
 };
 
+get '/unwizard' => sub {
+    my $self = shift;
+    $self->session(wizard => 0);
+    $self->redirect_to('/');
+};
+
 post '/add-pic' => sub {
     my $self = shift;
     my $id = $self->param('gameid');
@@ -341,7 +361,7 @@ sub gamename {
     $cat1 =~ s/[^a-zA-Z0-9_]//g;
     $cat2 =~ s/[^a-zA-Z0-9_]//g;
 
-    return "$cat1-or-$cat2";
+    return lc "$cat1-or-$cat2";
 }
 
 sub random_id {
@@ -389,4 +409,10 @@ sub has_perm {
 
     my $perms = $self->session('perms') || {};
     return $perms->{$id} || $self->session('wizard');
+}
+
+sub ucwords {
+   my $s = lc shift;
+   $s =~ s/\b(\w)/\u$1/g;
+   return $s;
 }
