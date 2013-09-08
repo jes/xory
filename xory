@@ -199,6 +199,7 @@ get '/add-pics/:id/:name' => sub {
             idx => $i,
             imgurl => "/$db->{game}{$id}{pictures}[$i-1]{file}",
             category => $db->{game}{$id}{pictures}[$i-1]{category},
+            descr => $db->{game}{$id}{pictures}[$i-1]{descr},
         };
     }
 

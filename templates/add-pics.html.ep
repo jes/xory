@@ -1,11 +1,12 @@
 % layout 'default';
 
 <div class="table-responsive">
-<p>Add the pictures. Once you're done here you won't be able to get back.</p>
+<p>Add the pictures, optionally give descriptions and set the categories.</p>
 <table class="margin-centred table table-condensed">
 % for my $pic (@$pictures) {
 <tr>
     <td><img class="img-rounded" width="125px" src="<%= $pic->{imgurl} %>"></td>
+    <td><%= $pic->{descr} %></td>
     <td><h4 class="finish-cat"><%= $pic->{category} %></h4></td>
     <td>
         <form method="post" action="/delete-pic">
@@ -21,7 +22,10 @@
 <input type="hidden" name="gameid" value="<%= $gameid %>">
 <tr>
     <td>
-        <input type="file" id="img" name="img">
+        <input type="file" name="img">
+    </td>
+    <td>
+        <input type="text" name="descr" class="form-control" placeholder="Description...">
     </td>
     <td>
         <select name="category" class="form-control">
@@ -40,9 +44,9 @@
 
 <div class="row">
 <div class="col-md-12">
-<a href="/shuffle-pics/<%= $gameid %>/<%= $gamename %>" class="btn btn-primary">Shuffle pictures</a>
-<a href="/play/<%= $gameid %>/<%= $gamename %>" class="btn btn-success">Finish and play</a>
-
 <p>Game link: <strong><%= baseurl %>/play/<%= $gameid %>/<%= $gamename %></strong></p>
+
+<a href="/shuffle-pics/<%= $gameid %>/<%= $gamename %>" class="btn btn-primary">Shuffle pictures</a>
+<a href="/play/<%= $gameid %>/<%= $gamename %>" class="btn btn-success">Finish and play</a> <i>You won't be able to get back here.</i>
 </div>
 </div>
