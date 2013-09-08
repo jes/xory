@@ -272,8 +272,6 @@ get '/shuffle-pics/:id/:name' => sub {
     @p = shuffle @p;
     $db->{game}{$id}{pictures} = \@p;
 
-    print STDERR "SAFE!\n";
-
     $self->redirect_to(url_for_id($self->param('id'), 'add-pics'));
 };
 
