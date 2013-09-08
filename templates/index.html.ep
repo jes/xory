@@ -13,7 +13,7 @@
         <p>Play a ready-made <i>X or Y</i> game.</p>
         % for my $game (@$games) {
         <div class="media">
-            <a class="pull-left" href="#">
+            <a class="pull-left" href="<%= $game->{playurl} %>">
                 <img class="media-object img-rounded" width="125px" src="<%= $game->{imgurl} %>">
             </a>
             <div class="media-body">

@@ -22,19 +22,8 @@ helper 'baseurl' => sub {
 get '/' => sub {
     my $self = shift;
 
-    my @games;
-    for my $i (2,3) {
-        push @games, {
-            cat1 => ucwords($db->{game}{$i}{cat1}),
-            cat2 => ucwords($db->{game}{$i}{cat2}),
-            imgurl => "/$db->{game}{$i}{pictures}[0]{file}",
-            descr => $db->{game}{$i}{descr},
-            playurl => url_for_id($i),
-        };
-    }
-
     $self->stash(
-        games => \@games,
+        games => [ suggest_games() ],
     );
     $self->render('index');
 };
@@ -42,6 +31,15 @@ get '/' => sub {
 get '/about' => sub {
     my $self = shift;
     $self->render('about');
+};
+
+get '/popular' => sub {
+    my $self = shift;
+
+    $self->stash(
+        games => [ suggest_games() ],
+    );
+    $self->render('popular');
 };
 
 get '/play/:id' => sub {
@@ -415,4 +413,18 @@ sub ucwords {
    my $s = lc shift;
    $s =~ s/\b(\w)/\u$1/g;
    return $s;
+}
+
+sub suggest_games {
+    my @games;
+    for my $i (2,3) {
+        push @games, {
+            cat1 => ucwords($db->{game}{$i}{cat1}),
+            cat2 => ucwords($db->{game}{$i}{cat2}),
+            imgurl => "/$db->{game}{$i}{pictures}[0]{file}",
+            descr => $db->{game}{$i}{descr},
+            playurl => url_for_id($i),
+        };
+    }
+    return @games;
 }
