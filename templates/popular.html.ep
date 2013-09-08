@@ -1,5 +1,7 @@
 % layout 'default';
 
+<p>Here are some popular games. Have an idea for a game? <a href="/create">create your own</a>.</p>
+
 <div class="row">
 % my @g = @$games;
 % my @h;

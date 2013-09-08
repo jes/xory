@@ -34,9 +34,19 @@
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li><a href="/about">About</a></li>
-            <li><a href="/popular">Play a game</a></li>
-            <li><a href="/create">Create a game</a></li>
+            <!-- <%= current_route %> -->
+            % my @pages = (
+            %   { name => 'About', url => '/about', route => 'about' },
+            %   { name => 'Play a game', url => '/popular', route => 'popular|playidname|reviewidname|finishidname' },
+            %   { name => 'Create a game', url => '/create', route => 'create|add-pics' },
+            % );
+            % for my $p (@pages) {
+            %   if (current_route =~ /^$p->{route}$/) {
+            <li class="active"><a href="<%= $p->{url} %>"><%= $p->{name} %></a></li>
+            %   } else {
+            <li><a href="<%= $p->{url} %>"><%= $p->{name} %></a></li>
+            %   }
+            % }
             % if (session 'wizard') {
                 <li style="padding-top: 15px"><span class="label label-danger"><a href="/unwizard">WIZARD</a></span></li>
             % }
