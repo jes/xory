@@ -6,7 +6,6 @@ use strict;
 use warnings;
 
 use AnyEvent::Util;
-use Data::Structure::Util qw(unbless);
 use DBM::Deep;
 use Image::Magick;
 use List::Util qw(shuffle);
