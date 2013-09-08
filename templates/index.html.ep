@@ -4,7 +4,7 @@
     <h1>Play and create <i>X or Y</i> games</h1>
     <p>You're shown a series of pictures and have to guess which category each picture is in.</p>
     <a class="btn btn-lg btn-primary" href="/popular">Look at some games &raquo;</a>
-    <a class="btn btn-lg btn-default" href="/popular">Create a game &raquo;</a>
+    <a class="btn btn-lg btn-default" href="/create">Create a game &raquo;</a>
 </div>
 
 <div class="row">
