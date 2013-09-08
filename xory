@@ -22,7 +22,7 @@ get '/' => sub {
     my $self = shift;
 
     $self->stash(
-        games => [ suggest_games() ],
+        games => [ suggest_games(2) ],
     );
     $self->render('index');
 };
@@ -415,8 +415,13 @@ sub ucwords {
 }
 
 sub suggest_games {
+    my $n = shift;
+
+    my @ids = @{ $db->{suggest} };
+    @ids = @ids[0..$n-1] if $n;
+
     my @games;
-    for my $i (2,3) {
+    for my $i (@ids) {
         push @games, {
             cat1 => ucwords($db->{game}{$i}{cat1}),
             cat2 => ucwords($db->{game}{$i}{cat2}),
