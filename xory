@@ -64,6 +64,11 @@ get '/play/:id/:name' => sub {
     my $idx = $gamecfg->{idx};
     $self->session("cfg$id" => $gamecfg);
 
+    if ($idx > $db->{game}{$id}{npictures}) {
+        $self->redirect_to(url_for_id($id, 'finish'));
+        return;
+    }
+
     $self->stash(
         cat1 => $db->{game}{$id}{cat1},
         cat2 => $db->{game}{$id}{cat2},
