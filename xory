@@ -53,6 +53,11 @@ get '/play/:id/:name' => sub {
         $self->redirect_to(url_for_id($id));
         return;
     }
+    if (!exists $db->{game}{$id}) {
+        $self->flash(error => 'No such game.');
+        $self->redirect_to('/popular');
+        return;
+    }
 
     my $gamecfg = $self->session("cfg$id") || initial_config($id);
     $gamecfg = initial_config($id) if $gamecfg->{delete_cfg};
@@ -99,6 +104,11 @@ get '/review/:id/:name' => sub {
         $self->redirect_to(url_for_id($id, 'review'));
         return;
     }
+    if (!exists $db->{game}{$id}) {
+        $self->flash(error => 'No such game.');
+        $self->redirect_to('/popular');
+        return;
+    }
 
     my $gamecfg = $self->session("cfg$id") || {};
 
@@ -129,6 +139,11 @@ get '/finish/:id/:name' => sub {
     my $id = $self->param('id');
     if ($self->param('name') ne gamename($id)) {
         $self->redirect_to(url_for_id($id, 'finish'));
+        return;
+    }
+    if (!exists $db->{game}{$id}) {
+        $self->flash(error => 'No such game.');
+        $self->redirect_to('/popular');
         return;
     }
 
@@ -355,6 +370,8 @@ sub initial_config {
 
 sub gamename {
     my $id = shift;
+
+    return 'no-such-game' if !exists $db->{game}{$id};
 
     my $cat1 = $db->{game}{$id}{cat1};
     my $cat2 = $db->{game}{$id}{cat2};
