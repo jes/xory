@@ -1,9 +1,5 @@
 % layout 'default';
 
-<div class="row centred">
-    <%= $descr %>
-</div>
-
 <div class="table-responsive">
 <table class="margin-centred table table-condensed">
 <tr><th></th><th>It is</th><th>You said</th><th>Correct</th></tr>
@@ -30,5 +26,7 @@
 </tr>
 </table>
 </div>
+
+<p>Game link: <a href="<%= baseurl %>/play/<%= $gameid %>/<%= $gamename %>"><%= baseurl %>/play/<%= $gameid %>/<%= $gamename %></a></p>
 
 <a href="/play/<%= $gameid %>/<%= $gamename %>" class="btn btn-primary">Play again</a>
