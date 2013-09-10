@@ -29,6 +29,7 @@
 <input type="hidden" name="gameid" value="<%= $gameid %>">
 <tr>
     <td>
+        Upload a picture:
         <input type="file" name="img">
     </td>
     <td>
