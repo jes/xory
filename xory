@@ -320,6 +320,26 @@ post '/add-pic' => sub {
     };
 };
 
+post '/update-descr' => sub {
+    my $self = shift;
+    my $id = $self->param('gameid');
+
+    if (!defined $id || $id !~ /^\d+$/) {
+        $self->flash(error => 'Something went wrong.');
+        $self->redirect_to('/create');
+        return;
+    }
+
+    if (!has_perm($self, $id)) {
+        $self->flash(error => 'Insufficient permission to edit that game.');
+        $self->redirect_to('/create');
+        return;
+    }
+
+    $db->{game}{$id}{pictures}[$self->param('idx')-1]{descr} = $self->param('descr');
+    $self->redirect_to(url_for_id($id, 'add-pics'));
+};
+
 post '/delete-pic' => sub {
     my $self = shift;
     my $id = $self->param('gameid');

@@ -6,7 +6,14 @@
 % for my $pic (@$pictures) {
 <tr>
     <td><img class="img-rounded" width="125px" src="<%= $pic->{imgurl} %>"></td>
-    <td><%= $pic->{descr} %></td>
+    <td>
+        <form method="post" action="/update-descr">
+            <input type="hidden" name="gameid" value="<%= $gameid %>">
+            <input type="hidden" name="idx" value="<%= $pic->{idx} %>">
+            <input class="form-control" type="text" name="descr" value="<%= $pic->{descr} %>">
+            <button type="submit" class="btn btn-primary">Update</button>
+        </form>
+    </td>
     <td><h4 class="finish-cat"><%= $pic->{category} %></h4></td>
     <td>
         <form method="post" action="/delete-pic">
