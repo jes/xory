@@ -458,12 +458,6 @@ sub has_perm {
     return $perms->{$id} || $self->session('wizard');
 }
 
-sub ucwords {
-   my $s = lc shift;
-   $s =~ s/\b(\w)/\u$1/g;
-   return $s;
-}
-
 sub suggest_games {
     my $n = shift;
 
@@ -473,8 +467,8 @@ sub suggest_games {
     my @games;
     for my $i (@ids) {
         push @games, {
-            cat1 => ucwords($db->{game}{$i}{cat1}),
-            cat2 => ucwords($db->{game}{$i}{cat2}),
+            cat1 => ucfirst($db->{game}{$i}{cat1}),
+            cat2 => ucfirst($db->{game}{$i}{cat2}),
             imgurl => "/$db->{game}{$i}{pictures}[0]{file}",
             descr => $db->{game}{$i}{descr},
             playurl => url_for_id($i),
