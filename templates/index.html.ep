@@ -5,7 +5,7 @@
     <h1>Fun picture-guessing games</h1>
     <p>You're shown a series of pictures and have to guess which category each picture is in.</p>
     % my $g = $games->[rand @$games];
-    <a class="btn btn-lg btn-primary" href="/play/<%= $g->{playurl} %>">Play <%= $g->{cat1} %> or <%= $g->{cat2} %> &raquo;</a>
+    <a class="btn btn-lg btn-primary" href="<%= $g->{playurl} %>">Play <%= $g->{cat1} %> or <%= $g->{cat2} %> &raquo;</a>
     <a class="btn btn-lg btn-default" href="/create">Create a game &raquo;</a>
 </div>
 % } else {
