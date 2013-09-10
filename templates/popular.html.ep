@@ -2,25 +2,24 @@
 
 <p>Here are some popular games. Have an idea for a game? <a href="/create">create your own</a>.</p>
 
-<div class="row">
-% my @g = @$games;
-% my @h;
-% push @h, [ @g[0..$#g/2] ];
-% push @h, [ @g[$#g/2+1 .. $#g] ];
-% for my $c (@h) {
-    <div class="col-md-6">
-        % for my $game (@$c) {
-        <div class="media">
-            <a class="pull-left" href="<%= $game->{playurl} %>">
-                <img class="media-object img-rounded" width="125px" src="<%= $game->{imgurl} %>">
-            </a>
-            <div class="media-body">
-                <h4 class="media-heading"><%= $game->{cat1} %> or <%= $game->{cat2} %>?</h4>
-                <p><%= $game->{descr} %></p>
-                <a class="btn btn-success" href="<%= $game->{playurl} %>">Play &raquo;</a>
+% while (@$games) {
+<div class="row mainpic">
+    % for (1..2) {
+    % my $game = shift @$games;
+        % if ($game) {
+        <div class="col-md-6">
+            <div class="media">
+                <a class="pull-left" href="<%= $game->{playurl} %>">
+                    <img class="media-object img-rounded" width="125px" src="<%= $game->{imgurl} %>">
+                </a>
+                <div class="media-body">
+                    <h4 class="media-heading"><%= $game->{cat1} %> or <%= $game->{cat2} %>?</h4>
+                    <p><%= $game->{descr} %></p>
+                    <a class="btn btn-success" href="<%= $game->{playurl} %>">Play &raquo;</a>
+                </div>
             </div>
         </div>
         % }
-    </div>
-% }
+    % }
 </div>
+% }
