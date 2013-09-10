@@ -22,14 +22,10 @@ get '/' => sub {
     my $self = shift;
 
     $self->stash(
-        games => [ suggest_games(2) ],
+        games => [ suggest_games() ],
+        jumbotron => 1,
     );
     $self->render('index');
-};
-
-get '/about' => sub {
-    my $self = shift;
-    $self->render('about');
 };
 
 get '/popular' => sub {
@@ -37,8 +33,14 @@ get '/popular' => sub {
 
     $self->stash(
         games => [ suggest_games() ],
+        jumbotron => 0,
     );
-    $self->render('popular');
+    $self->render('index');
+};
+
+get '/about' => sub {
+    my $self = shift;
+    $self->render('about');
 };
 
 get '/play/:id' => sub {

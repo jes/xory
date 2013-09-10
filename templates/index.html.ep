@@ -1,32 +1,35 @@
 % layout 'default';
 
+% if ($jumbotron) {
 <div class="jumbotron">
     <h1>Fun picture-guessing games</h1>
     <p>You're shown a series of pictures and have to guess which category each picture is in.</p>
-    <a class="btn btn-lg btn-primary" href="/popular">Look at some games &raquo;</a>
+    % my $g = $games->[rand @$games];
+    <a class="btn btn-lg btn-primary" href="/play/<%= $g->{playurl} %>">Play <%= $g->{cat1} %> or <%= $g->{cat2} %> &raquo;</a>
     <a class="btn btn-lg btn-default" href="/create">Create a game &raquo;</a>
 </div>
+% } else {
+<p>Here are some popular games. Have an idea for a game? <a href="/create">create your own</a>.</p>
+% }
 
+% while (@$games) {
 <div class="row">
-    <div class="col-md-6">
-        <h2>Play a game</h2>
-        <p>Play a ready-made <i>Xory</i> game.</p>
-        % for my $game (@$games) {
-        <div class="media">
-            <a class="pull-left" href="<%= $game->{playurl} %>">
-                <img class="media-object img-rounded" width="125px" src="<%= $game->{imgurl} %>">
-            </a>
-            <div class="media-body">
-                <h4 class="media-heading"><%= $game->{cat1} %> or <%= $game->{cat2} %>?</h4>
-                <p><%= $game->{descr} %></p>
-                <a class="btn btn-success" href="<%= $game->{playurl} %>">Play &raquo;</a>
+    % for (1..2) {
+    % my $game = shift @$games;
+        % if ($game) {
+        <div class="col-md-6 mainpic">
+            <div class="media">
+                <a class="pull-left" href="<%= $game->{playurl} %>">
+                    <img class="media-object img-rounded" width="125px" src="<%= $game->{imgurl} %>">
+                </a>
+                <div class="media-body">
+                    <h4 class="media-heading"><%= $game->{cat1} %> or <%= $game->{cat2} %>?</h4>
+                    <p><%= $game->{descr} %></p>
+                    <a class="btn btn-success" href="<%= $game->{playurl} %>">Play &raquo;</a>
+                </div>
             </div>
         </div>
         % }
-    </div>
-    <div class="col-md-6">
-        <h2>Create a game</h2>
-        <p>Set your own categories, upload your pictures, create a <i>Xory</i> game, and send it to your friends.</p>
-        <a class="btn btn-success" href="/create">Create a game &raquo;</a>
-    </div>
+    % }
 </div>
+% }
