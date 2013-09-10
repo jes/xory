@@ -79,6 +79,7 @@ get '/play/:id/:name' => sub {
         npictures => $db->{game}{$id}{npictures},
         ncorrect => $gamecfg->{ncorrect},
     );
+    $self->res->headers->cache_control('no-cache');
     $self->render('play');
 };
 
@@ -131,6 +132,7 @@ get '/review/:id/:name' => sub {
         npictures => $db->{game}{$id}{npictures},
         ncorrect => $gamecfg->{ncorrect},
     );
+    $self->res->headers->cache_control('no-cache');
     $self->render('review');
 };
 
@@ -176,6 +178,7 @@ get '/finish/:id/:name' => sub {
         npictures => $db->{game}{$id}{npictures},
         ncorrect => $ncorrect,
     );
+    $self->res->headers->cache_control('no-cache');
     $self->render('finish');
 };
 
