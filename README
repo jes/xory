@@ -24,6 +24,15 @@ Xory is implemented as a Mojolicious::Lite app, using Bootstrap 3 for the UI.
 DBM::Deep is used for the database, though this is questionable and warrants
 replacement.
 
+Configuration
+-------------
+
+The following fields in the db are configuration:
+
+suggest - array of game ids to use in suggestions
+enable_wizard - true to allow wizard mode at /wizard
+passphrase - Mojolicious passphrase
+
 Contact
 -------
 

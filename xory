@@ -354,6 +354,7 @@ post '/delete-pic' => sub {
     $self->redirect_to(url_for_id($id, 'add-pics'));
 };
 
+app->secret($db->{passphrase}) if $db->{passphrase};
 app->start;
 
 sub url_for_id {
