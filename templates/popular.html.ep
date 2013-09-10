@@ -3,11 +3,11 @@
 <p>Here are some popular games. Have an idea for a game? <a href="/create">create your own</a>.</p>
 
 % while (@$games) {
-<div class="row mainpic">
+<div class="row">
     % for (1..2) {
     % my $game = shift @$games;
         % if ($game) {
-        <div class="col-md-6">
+        <div class="col-md-6 mainpic">
             <div class="media">
                 <a class="pull-left" href="<%= $game->{playurl} %>">
                     <img class="media-object img-rounded" width="125px" src="<%= $game->{imgurl} %>">
