@@ -1,0 +1,31 @@
+Xory - picture-guessing game
+============================
+
+Introduction
+------------
+
+Xory implements an interface for playing and creating picture-guessing games.
+The name comes from the question "X or Y?" which is the basis of the game.
+The user is presented with a series of pictures, and is tasked with guessing
+the category that each picture fits in.
+
+The user is also able to create a Xory game using his own categories and
+pictures.
+
+Website
+-------
+
+Xory is available online at http://xory.pm/
+
+Technical
+---------
+
+Xory is implemented as a Mojolicious::Lite app, using Bootstrap 3 for the UI.
+DBM::Deep is used for the database, though this is questionable and warrants
+replacement.
+
+Contact
+-------
+
+Xory is created by James Stanley <james@incoherency.co.uk> - please get in
+touch if you have anything at all to say.
