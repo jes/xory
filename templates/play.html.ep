@@ -2,18 +2,18 @@
 
 <div class="row centred">
     <%= $descr %>
+    <h3 class="idx"><%= $idx %><small>/<%= $npictures %></small>
+    <span style="font-size:0.8em"><%= $ncorrect %><small>/<%= $idx-1 %> correct</small></span></h3>
+</div>
+
+<div class="row centred mainpic">
+    <a href="/choice/<%= $gameid %>/<%= $idx %>/1" class="btn btn-lg btn-primary"><%= $cat1 %></a> or <a href="/choice/<%= $gameid %>/<%= $idx %>/2" class="btn btn-lg btn-primary"><%= $cat2 %></a> ?
 </div>
 
 <div class="row">
     <div class="col-md-3"></div>
-    <div class="col-md-6 centred mainpic">
-        <h3 class="idx"><%= $idx %><small>/<%= $npictures %></small>
-        <span style="font-size:0.8em"><%= $ncorrect %><small>/<%= $idx-1 %> correct</small></span></h3>
+    <div class="col-md-6 centred">
         <img class="img-rounded" src="<%= $imgurl %>">
     </div>
     <div class="col-md-3"></div>
-</div>
-
-<div class="row centred">
-    <a href="/choice/<%= $gameid %>/<%= $idx %>/1" class="btn btn-lg btn-primary"><%= $cat1 %></a> or <a href="/choice/<%= $gameid %>/<%= $idx %>/2" class="btn btn-lg btn-primary"><%= $cat2 %></a> ?
 </div>
