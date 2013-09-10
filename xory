@@ -309,10 +309,11 @@ post '/add-pic' => sub {
     }
 
     my $category = $self->param('category');
+    my $descr = $self->param('descr');
     my $imgfile = $self->req->upload('img');
 
     fork_call {
-        handle_uploaded_pic($id, $category, $imgfile);
+        handle_uploaded_pic($id, $category, $descr, $imgfile);
     } sub {
         if ($@) {
             print STDERR "$@";
@@ -415,7 +416,7 @@ sub random_id {
 }
 
 sub handle_uploaded_pic {
-    my ($id, $category, $img) = @_;
+    my ($id, $category, $descr, $img) = @_;
 
     mkdir "public/img/game/$id";
 
@@ -438,6 +439,7 @@ sub handle_uploaded_pic {
     push @{ $db->{game}{$id}{pictures} }, {
         category => $category,
         file => $file,
+        descr => $descr,
     };
     $db->{game}{$id}{npictures}++;
 }
