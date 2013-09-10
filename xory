@@ -278,10 +278,9 @@ get '/shuffle-pics/:id/:name' => sub {
     $self->redirect_to(url_for_id($self->param('id'), 'add-pics'));
 };
 
-# TODO: auth
 get '/wizard' => sub {
     my $self = shift;
-    $self->session(wizard => 1);
+    $self->session(wizard => 1) if $db->{enable_wizard};
     $self->redirect_to('/');
 };
 
