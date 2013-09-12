@@ -204,6 +204,7 @@ post '/create' => sub {
         cat1 => $self->param('cat1'),
         cat2 => $self->param('cat2'),
         descr => $self->param('descr'),
+        email => $self->param('email'),
         pictures => [],
         npictures => 0,
     };
@@ -273,7 +274,7 @@ get '/shuffle-pics/:id/:name' => sub {
     }
 
     my @p = @{ $db->{game}{$id}{pictures} };
-    @p = map { +{ file => $_->{file}, category => $_->{category} } } @p;
+    @p = map { shallow_copy($_) } @p;
     @p = shuffle @p;
     $db->{game}{$id}{pictures} = \@p;
 
@@ -475,4 +476,10 @@ sub suggest_games {
         };
     }
     return @games;
+}
+
+sub shallow_copy {
+    my $h = shift;
+
+    return { map { $_ => $h->{$_} } keys %$h };
 }
